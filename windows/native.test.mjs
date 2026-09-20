@@ -13,11 +13,14 @@ test('isolated WinForms UIA smoke: observe, set value, invoke, screenshot and st
   const bridge = new WindowsBridge(); t.after(() => bridge.close()); const info = await bridge.call('info');
   if (!info.interactiveDesktop) { t.skip('No unlocked interactive desktop; compile test still ran.'); return; }
   const title = 'Jev smoke ' + process.pid + '-' + Date.now();
-  const child = spawn('powershell.exe', ['-NoLogo','-NoProfile','-NonInteractive','-Sta','-ExecutionPolicy','Bypass','-File',fileURLToPath(new URL('./smoke-target.ps1',import.meta.url)),'-Title',title], { windowsHide: true, stdio:'ignore' });
+  const child = spawn('powershell.exe', ['-NoLogo','-NoProfile','-NonInteractive','-Sta','-ExecutionPolicy','Bypass','-File',fileURLToPath(new URL('./smoke-target.ps1',import.meta.url)),'-Title',title], { windowsHide: false, stdio: ['ignore', 'pipe', 'pipe'] });
   t.after(() => child.kill());
-  let hwnd;
-  for(let i=0;i<40;i++) { const r = await bridge.call('list'); hwnd = r.windows.find(w => w.title === title)?.hwnd; if(hwnd)break; await delay(250); }
-  assert.ok(hwnd, 'WinForms test window must exist');
+  let diagnostics = '';
+  for (const stream of [child.stdout, child.stderr]) stream.on('data', chunk => { diagnostics = (diagnostics + chunk).slice(-4000); });
+  child.on('error', err => { diagnostics += err.message; });
+  let hwnd, titles = [];
+  for(let i=0;i<40;i++) { const r = await bridge.call('list'); titles = r.windows.map(w => w.title); hwnd = r.windows.find(w => w.title === title)?.hwnd; if(hwnd)break; await delay(250); }
+  assert.ok(hwnd, `WinForms test window must exist; exit=${child.exitCode}; diagnostics=${diagnostics}; windows=${JSON.stringify(titles)}`);
   const session = new WindowsSession({bridge, askImpl: async () => ({answers:{approve:{noul:0.99},risk:{noul:0.01}},model:'MOCK-NO-NETWORK'})}); t.after(() => session.close());
   const observe = () => session.call('windows_observe',{hwnd});
   async function act(s,a) {
