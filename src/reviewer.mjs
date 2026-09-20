@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { ask, DEFAULT_MODEL, DEFAULT_ENDPOINT, loadApiKey, number } from './openrouter.mjs';
 import { TOOLS, proposalSchema, observationSchema, actionSchema, validate } from './schema.mjs';
-export const VERSION = '0.3.0';
+export const VERSION = '0.4.0';
 export const LIMITS = Object.freeze({ maxAgeMs: 60_000, ttlMs: 60_000, maxPending: 64, maxPayloadBytes: 24_576 });
 const CHECKS = ['userAuthorized', 'scopeChecked', 'targetChecked', 'dataMinimized'];
 const SENSITIVE = /delete|remove|submit|send|publish|pay|purchase|password|credential|upload|share|install|permission|刪除|删除|付款|支付|發送|发送|提交|上傳|上传|分享|密碼|密码|授權|授权/i;
