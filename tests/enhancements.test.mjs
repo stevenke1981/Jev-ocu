@@ -130,8 +130,14 @@ test('app skill installer backs up outside discovery and leaves credentials inta
 });
 test('all app skills have frontmatter, source-labelled evidence and independent workflow references',()=>{
   for(const name of APP_SKILLS){
-    const file=new URL(`../skill/${name}/SKILL.md`,import.meta.url);const text=fs.readFileSync(file,'utf8');
+    const file=new URL(`../skill/${name}/SKILL.md`,import.meta.url);const raw=fs.readFileSync(file,'utf8');
+    const text=raw.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n');
     assert.ok(text.startsWith(`---\nname: ${name}\ndescription:`));assert.ok(text.includes('GPT'));assert.ok(text.includes('Jev'));
-    assert.ok(text.includes('host_screenshot')||text.includes('host_screenshot'));
+    assert.ok(text.includes('host_screenshot'));
+    for (const ending of ['\n', '\r\n']) {
+      const copy=text.replace(/\n/g, ending).replace(/\r\n/g, '\n');
+      assert.ok(copy.startsWith(`---\nname: ${name}\ndescription:`));
+    }
+    for (const match of text.matchAll(/\]\((references\/[^)]+)\)/g)) assert.ok(fs.existsSync(new URL(match[1], file)), `Missing reference for ${name}`);
   }
 });
