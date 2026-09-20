@@ -105,3 +105,12 @@ node windows/cli.mjs config codex
 原生Windows需要互動桌面，官方/OCU功能是否可用取決於當前版本、權限、作業系統與App。沒見到欄位要填unknowns；不聲稱加入Skill後就完整支援所有Resolve/CapCut版本。未量測真實任務前，不宣稱Jev準確率提高的百分比。
 
 `npm test` 是離線模擬＋平台適用的native測試。Windows native smoke會打開自己隔離的WinForms視窗；不操作使用者App、不使用付費模型。Linux/macOS明確skip native項目。實際測試結果以本commit的CI/log為準；不把mock通過當成真正OCU、官方sky或三個桌面App端到端成功。
+
+### Windows 10 小畫家實測（2026-09-20）
+
+一次真實桌面任務（畫圖並存檔）量到三個與「後端可互換」假設相衝的事實，細節與雜湊見 [skill/jev-paint/references/backend-findings.md](skill/jev-paint/references/backend-findings.md)：
+
+- **OCU 在 Windows 沒有 `SendInput`**（執行檔只有 `PostMessage`／`SendMessage`），對自繪 ribbon／畫布的點擊實測無效（差異 0 px）；`click_method: global` 回報不支援。
+- **小畫家 ribbon 不在無障礙樹**：OCU 與本專案原生 .NET UIA 都只看到容器節點。座標因此只能來自宿主截圖，這也是座標型提案 approve 卡在 0.85–0.88（門檻 0.90）而 risk 僅 0.06 的原因——擋下來的是 provenance，不是安全。
+- **原生 companion 的座標輸入需要前景**：`windows_execute` 回 `Target is not foreground; explicitly review and execute focus first`。最短路徑假設（先讓一次 `focus` 通過）尚未實測。
+- 真實任務本身有完成，但**執行路徑是宿主端 pyautogui fallback**，不是 OCU、也不是本專案 native driver；依 `AGENTS.md` 它屬於需使用者明確選定的替代路徑，本專案不把它當預設後端。

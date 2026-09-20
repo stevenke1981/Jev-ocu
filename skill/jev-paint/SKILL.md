@@ -35,4 +35,4 @@ phase 應具体，如 `select-rectangle`、`resize-canvas`、`save-png`；不要
 
 交付記錄：檔案實際路徑、格式、畫布尺寸、是否透明、是否另存可編輯專案、重開檔案驗收結果。未儲存就明確說未完成，不以截圖當作已交付文件。
 
-細項见 [工作檢查表](references/workflows.md)。
+細項见 [工作檢查表](references/workflows.md)。按鍵的文字化候選清單见 [Windows 10 ribbon 選單](references/win10-ribbon-menu.md)（機器可讀：[win10-ribbon-menu.json](references/win10-ribbon-menu.json)）；後端能力實測、證據硬規則與可重用教訓见 [後端能力實測](references/backend-findings.md)。

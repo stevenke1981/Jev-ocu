@@ -1,0 +1,95 @@
+{
+  "schema": "jev-paint/ribbon-menu/1",
+  "app": "mspaint (Microsoft Paint, 傳統桌面版)",
+  "appVersion": "10.0.19041.4522 (WinBuild.160101.0800)",
+  "os": "Windows 10 專業版 22H2 (10.0.19045), 64-bit, 繁體中文",
+  "measuredAt": "2026-09-20T11:24Z",
+  "coordinateSpace": "OCU 視窗相對實體像素；screen = OCU + 視窗原點。量測時視窗 = 非最大化 1535x864 @ screen (12,3)。",
+  "warning": "本選單是 host 以截圖量測與文字描述建立的候選清單，不是 UIA 節點。小畫家 ribbon 完全不暴露於無障礙樹（實測 OCU depth=12/nodes=500 只有 21 個容器節點；本專案原生 .NET UIA 對同一視窗的 60 個節點同樣只有容器），因此座標只能用截圖方式取得。另：OCU 在 Windows 沒有 SendInput，只有 PostMessage，對自繪 ribbon／畫布的點擊實測無效（差異 0 px）——本檔的 ocu 座標用於文字化判斷，實際輸入須選用具真實輸入的後端。",
+  "canvas": {
+    "ocuOrigin": { "x": 14, "y": 194 },
+    "sizePx": { "width": 341, "height": 261 },
+    "zoom": "100%",
+    "layersSupported": false,
+    "resizable": "可用『影像內容』對話框 (Ctrl+E，單位選像素) 改變尺寸；改變後必須重新量測。同一任務最終輸出實測為 800x600，原點不變。",
+    "note": "畫布為純白 #FFFFFF 連續矩形；尺寸可與狀態列『341 x 261 像素』互相驗證。"
+  },
+  "confidenceMeaning": {
+    "verified": "以格線 + 放大十字準星目視確認命中目標圖示",
+    "derived": "由已驗證點的均勻格線（欄距≈23.3px、列距≈25px）推導，未逐一目視確認",
+    "unmeasured": "尚未量測座標，不可用於點擊"
+  },
+  "items": [
+    { "id": "menu:tab.file", "label": "檔案", "group": "索引標籤", "role": "tab", "ocu": { "x": 38, "y": 48 }, "confidence": "derived" },
+    { "id": "menu:tab.home", "label": "常用", "group": "索引標籤", "role": "tab", "ocu": { "x": 112, "y": 48 }, "confidence": "derived" },
+    { "id": "menu:tab.view", "label": "檢視", "group": "索引標籤", "role": "tab", "ocu": { "x": 181, "y": 48 }, "confidence": "derived" },
+
+    { "id": "menu:clipboard.paste", "label": "貼上", "group": "剪貼簿", "role": "button", "ocu": { "x": 47, "y": 95 }, "confidence": "derived" },
+    { "id": "menu:clipboard.cut", "label": "剪下", "group": "剪貼簿", "role": "button", "ocu": { "x": 95, "y": 82 }, "confidence": "derived" },
+    { "id": "menu:clipboard.copy", "label": "複製", "group": "剪貼簿", "role": "button", "ocu": { "x": 95, "y": 111 }, "confidence": "derived" },
+
+    { "id": "menu:image.select", "label": "選取", "group": "影像", "role": "button", "ocu": { "x": 181, "y": 87 }, "confidence": "derived" },
+    { "id": "menu:image.crop", "label": "裁剪", "group": "影像", "role": "button", "ocu": { "x": 245, "y": 82 }, "confidence": "derived", "note": "非作用中（畫布全選才啟用）" },
+    { "id": "menu:image.resize", "label": "調整大小", "group": "影像", "role": "button", "ocu": { "x": 245, "y": 113 }, "confidence": "derived" },
+    { "id": "menu:image.rotate", "label": "旋轉", "group": "影像", "role": "button", "ocu": { "x": 222, "y": 128 }, "confidence": "derived" },
+
+    { "id": "menu:tool.pencil", "label": "鉛筆", "group": "工具", "role": "toggle-button", "ocu": { "x": 322, "y": 95 }, "confidence": "derived" },
+    { "id": "menu:tool.fill", "label": "填滿（油漆桶）", "group": "工具", "role": "toggle-button", "ocu": { "x": 352, "y": 95 }, "confidence": "derived" },
+    { "id": "menu:tool.text", "label": "文字 (A)", "group": "工具", "role": "toggle-button", "ocu": { "x": 382, "y": 95 }, "confidence": "derived" },
+    { "id": "menu:tool.eraser", "label": "橡皮擦", "group": "工具", "role": "toggle-button", "ocu": { "x": 322, "y": 131 }, "confidence": "derived" },
+    { "id": "menu:tool.eyedropper", "label": "滴管（色彩選擇工具）", "group": "工具", "role": "toggle-button", "ocu": { "x": 352, "y": 131 }, "confidence": "derived" },
+    { "id": "menu:tool.magnifier", "label": "放大鏡", "group": "工具", "role": "toggle-button", "ocu": { "x": 382, "y": 131 }, "confidence": "derived" },
+    { "id": "menu:tool.brush", "label": "筆刷", "group": "工具", "role": "toggle-button", "ocu": { "x": 411, "y": 95 }, "confidence": "derived", "note": "啟動時預設選取的工具" },
+    { "id": "menu:tool.brush.size", "label": "筆刷大小（下拉）", "group": "工具", "role": "dropdown", "ocu": { "x": 427, "y": 95 }, "confidence": "unmeasured" },
+
+    { "id": "menu:shape.line", "label": "線條", "group": "形狀", "role": "toggle-button", "ocu": { "x": 470, "y": 88 }, "confidence": "derived" },
+    { "id": "menu:shape.curve", "label": "曲線", "group": "形狀", "role": "toggle-button", "ocu": { "x": 492, "y": 88 }, "confidence": "derived" },
+    { "id": "menu:shape.ellipse", "label": "橢圓", "group": "形狀", "role": "toggle-button", "ocu": { "x": 514, "y": 88 }, "confidence": "verified", "note": "形狀庫第1列第3欄；十字準星驗證命中" },
+    { "id": "menu:shape.rectangle", "label": "矩形", "group": "形狀", "role": "toggle-button", "ocu": { "x": 538, "y": 88 }, "confidence": "verified" },
+    { "id": "menu:shape.rounded-rect", "label": "圓角矩形", "group": "形狀", "role": "toggle-button", "ocu": { "x": 561, "y": 88 }, "confidence": "derived" },
+    { "id": "menu:shape.gallery-col6-row1", "label": "形狀庫第1列第6欄（圖示未經交互確認）", "group": "形狀", "role": "toggle-button", "ocu": { "x": 585, "y": 88 }, "confidence": "derived", "note": "外觀類似梯形/多邊形，未點擊確認實際名稱" },
+    { "id": "menu:shape.triangle", "label": "三角形", "group": "形狀", "role": "toggle-button", "ocu": { "x": 609, "y": 88 }, "confidence": "verified" },
+    { "id": "menu:shape.right-triangle", "label": "直角三角形", "group": "形狀", "role": "toggle-button", "ocu": { "x": 470, "y": 114 }, "confidence": "derived" },
+    { "id": "menu:shape.diamond", "label": "菱形", "group": "形狀", "role": "toggle-button", "ocu": { "x": 493, "y": 114 }, "confidence": "derived" },
+    { "id": "menu:shape.pentagon", "label": "五角形", "group": "形狀", "role": "toggle-button", "ocu": { "x": 514, "y": 114 }, "confidence": "verified" },
+    { "id": "menu:shape.hexagon", "label": "六角形", "group": "形狀", "role": "toggle-button", "ocu": { "x": 537, "y": 114 }, "confidence": "derived" },
+    { "id": "menu:arrow.right", "label": "向右箭頭", "group": "形狀", "role": "toggle-button", "ocu": { "x": 561, "y": 114 }, "confidence": "derived" },
+    { "id": "menu:arrow.left", "label": "向左箭頭", "group": "形狀", "role": "toggle-button", "ocu": { "x": 585, "y": 114 }, "confidence": "derived" },
+    { "id": "menu:arrow.up", "label": "向上箭頭", "group": "形狀", "role": "toggle-button", "ocu": { "x": 609, "y": 114 }, "confidence": "derived" },
+    { "id": "menu:arrow.down", "label": "向下箭頭", "group": "形狀", "role": "toggle-button", "ocu": { "x": 470, "y": 137 }, "confidence": "derived" },
+    { "id": "menu:star.four", "label": "星形四角", "group": "形狀", "role": "toggle-button", "ocu": { "x": 493, "y": 137 }, "confidence": "derived" },
+    { "id": "menu:star.five", "label": "星形五角", "group": "形狀", "role": "toggle-button", "ocu": { "x": 514, "y": 137 }, "confidence": "verified" },
+    { "id": "menu:star.six", "label": "星形六角", "group": "形狀", "role": "toggle-button", "ocu": { "x": 537, "y": 137 }, "confidence": "derived" },
+    { "id": "menu:callout.round", "label": "圓形註解", "group": "形狀", "role": "toggle-button", "ocu": { "x": 561, "y": 137 }, "confidence": "derived" },
+    { "id": "menu:callout.rect", "label": "矩形註解", "group": "形狀", "role": "toggle-button", "ocu": { "x": 585, "y": 137 }, "confidence": "derived" },
+    { "id": "menu:shape.cloud", "label": "雲朵", "group": "形狀", "role": "toggle-button", "ocu": { "x": 609, "y": 137 }, "confidence": "derived" },
+
+    { "id": "menu:shape.outline", "label": "外框（下拉）", "group": "形狀", "role": "dropdown", "ocu": { "x": 665, "y": 85 }, "confidence": "derived" },
+    { "id": "menu:shape.fill", "label": "填滿（下拉）", "group": "形狀", "role": "dropdown", "ocu": { "x": 666, "y": 110 }, "confidence": "derived" },
+
+    { "id": "menu:size", "label": "大小（筆寬／外框寬度，下拉）", "group": "形狀", "role": "dropdown", "ocu": { "x": 745, "y": 95 }, "confidence": "derived", "note": "目前值無法由圖示讀出" },
+    { "id": "menu:color.1", "label": "色彩 1（前景）", "group": "色彩", "role": "color-swatch", "ocu": { "x": 807, "y": 95 }, "confidence": "derived", "valueAtMeasurement": "黑" },
+    { "id": "menu:color.2", "label": "色彩 2（背景）", "group": "色彩", "role": "color-swatch", "ocu": { "x": 857, "y": 95 }, "confidence": "derived", "valueAtMeasurement": "白" },
+    { "id": "menu:color.palette", "label": "色彩盤（20 格 + 編輯色彩）", "group": "色彩", "role": "palette", "ocu": { "x": 890, "y": 95 }, "confidence": "unmeasured", "note": "各色格座標未逐一量測；列 1 y≈95、列 2 y≈118、列 3 y≈140（未驗證）" },
+    { "id": "menu:color.edit", "label": "編輯色彩", "group": "色彩", "role": "button", "ocu": { "x": 1186, "y": 130 }, "confidence": "derived" },
+    { "id": "menu:paint3d.launch", "label": "使用小畫家 3D 編輯", "group": "色彩", "role": "button", "ocu": { "x": 1268, "y": 130 }, "confidence": "derived" },
+
+    { "id": "menu:canvas.area", "label": "畫布工作區（341x261 白區）", "group": "畫布", "role": "canvas", "ocu": { "x": 14, "y": 194 }, "confidence": "verified", "note": "左上角 OCU (14,194)；畫布內座標 = OCU - (14,194)" },
+    { "id": "menu:status.canvas-size", "label": "狀態列：341 x 261 像素", "group": "狀態列", "role": "status", "ocu": { "x": 525, "y": 838 }, "confidence": "derived" },
+    { "id": "menu:status.zoom", "label": "縮放 100%", "group": "狀態列", "role": "status", "ocu": { "x": 1281, "y": 838 }, "confidence": "derived" },
+
+    { "id": "menu:quickaccess.undo", "label": "復原（快速存取工具列）", "group": "快速存取工具列", "role": "button", "ocu": null, "confidence": "unmeasured" },
+    { "id": "menu:quickaccess.redo", "label": "取消復原（快速存取工具列）", "group": "快速存取工具列", "role": "button", "ocu": null, "confidence": "unmeasured" },
+    { "id": "menu:quickaccess.save", "label": "儲存（快速存取工具列磁片圖示）", "group": "快速存取工具列", "role": "button", "ocu": null, "confidence": "unmeasured" }
+  ],
+  "verifiedElementsFromA11y": [
+    { "id": "2", "role": "窗格", "label": "Ribbon", "note": "真實 UIA 節點；bounds x9 y38 w1517 h151。可用作 ribbon 座標點擊的錨點。" },
+    { "id": "6", "role": "窗格", "label": "畫布容器 (ID 59648)", "note": "真實 UIA 節點；bounds x9 y189 w1517 h634。可用作畫布拖曳的錨點。" },
+    { "id": "11", "role": "窗格", "label": "縮放 100%" },
+    { "id": "12", "role": "窗格", "label": "縮小" },
+    { "id": "14", "role": "窗格", "label": "放大" },
+    { "id": "18", "role": "按鈕", "label": "最小化" },
+    { "id": "19", "role": "按鈕", "label": "最大化" },
+    { "id": "20", "role": "按鈕", "label": "關閉" }
+  ]
+}
