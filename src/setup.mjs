@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import os from 'node:os';
 import { pathToFileURL } from 'node:url';
@@ -33,7 +34,9 @@ export function install(agent, { home = os.homedir(), workspace, force = false, 
   const skill = fs.readFileSync(source, 'utf8').replaceAll('{{REPO_DIR}}', path.resolve(root).replaceAll('\\', '/'));
   const backups = [];
   for (const p of [destination, extension].filter(Boolean)) if (fs.existsSync(p)) {
-    const backup = p + '.backup-' + Date.now(); fs.renameSync(p, backup); backups.push(backup);
+    const backupDir = path.join(workspace ? path.resolve(workspace) : home, '.jev-ocu', 'skill-backups');
+    fs.mkdirSync(backupDir, { recursive: true });
+    const backup = path.join(backupDir, path.basename(p) + '-' + randomUUID()); fs.renameSync(p, backup); backups.push(backup);
   }
   fs.mkdirSync(destination, { recursive: true });
   fs.writeFileSync(path.join(destination, 'SKILL.md'), skill);

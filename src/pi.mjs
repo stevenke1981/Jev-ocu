@@ -11,6 +11,7 @@ export function piSchema(schema, Type) {
     return Type.Object(properties, { additionalProperties: schema.additionalProperties ?? false });
   }
   if (schema.type === 'array') return Type.Array(piSchema(schema.items, Type), { maxItems: schema.maxItems });
+  if (schema.type === 'number') return Type.Number();
   if (schema.type === 'boolean') return Type.Boolean();
   const { type, ...options } = schema;
   return Type.String(options); // plain string enum, not a Union of Literals

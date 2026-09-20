@@ -1,3 +1,4 @@
+import { contextSchema } from './evidence.mjs';
 const str = (maxLength = 200, minLength = 1) => ({ type: 'string', minLength, maxLength });
 const obj = (properties, required = Object.keys(properties)) => ({ type: 'object', properties, required, additionalProperties: false });
 export const observationSchema = obj({
@@ -10,17 +11,18 @@ export const actionSchema = obj({
   tool: str(160), targetId: str(120),
   arguments: { type: 'object', additionalProperties: true },
 });
-export const proposalSchema = obj({ goal: str(1000), observation: observationSchema, action: actionSchema });
+export const proposalSchema = obj({ goal: str(1000), observation: observationSchema, action: actionSchema, context: contextSchema }, ['goal', 'observation', 'action']);
 export const checksSchema = obj({
   userAuthorized: { type: 'boolean' }, scopeChecked: { type: 'boolean' },
   targetChecked: { type: 'boolean' }, dataMinimized: { type: 'boolean' },
   sensitiveActionAuthorized: { type: 'boolean' },
 }, ['userAuthorized', 'scopeChecked', 'targetChecked', 'dataMinimized']);
 export const TOOLS = [
+  { name: 'jev_assess_candidates', description: 'Optional paid target/action/done/risk suggestion over real candidates and evidence. Never executes or grants approval; host still proposes exact parameters.', inputSchema: obj({ goal: str(1000), observation: observationSchema, context: contextSchema }, ['goal', 'observation']) },
   { name: 'jev_info', description: 'Local configuration and capabilities. Does not call the model or operate a computer.', inputSchema: obj({}) },
   { name: 'jev_prepare_review', description: 'Bind a host-proposed exact action to a text UI observation. Returns four host checks; does not call Jev or execute.', inputSchema: obj({ proposal: proposalSchema }) },
   { name: 'jev_review_action', description: 'Review a prepared action using OpenRouter Jev. Returns ALLOW or DENY, never executes. May incur API cost.', inputSchema: obj({ preparedId: str(), hostChecks: checksSchema }) },
-  { name: 'jev_validate_review', description: 'One-use local check of an ALLOW against a fresh observation and the exact action. Host still executes and verifies with its own tools.', inputSchema: obj({ preparedId: str(), observation: observationSchema, action: actionSchema }) },
+  { name: 'jev_validate_review', description: 'One-use local check of an ALLOW against a fresh observation and the exact action. Host still executes and verifies with its own tools.', inputSchema: obj({ preparedId: str(), observation: observationSchema, action: actionSchema, context: contextSchema }, ['preparedId', 'observation', 'action']) },
 ];
 
 export function validate(schema, value, path = 'input') {
@@ -38,5 +40,6 @@ export function validate(schema, value, path = 'input') {
   } else if (schema.type === 'string') {
     if (typeof value !== 'string' || value.length < (schema.minLength ?? 0) || value.length > (schema.maxLength ?? Infinity)) bad();
     if (schema.enum && !schema.enum.includes(value)) bad();
-  } else if (schema.type === 'boolean' && typeof value !== 'boolean') bad();
+  } else if (schema.type === 'number' && (typeof value !== 'number' || !Number.isFinite(value))) bad();
+  else if (schema.type === 'boolean' && typeof value !== 'boolean') bad();
 }

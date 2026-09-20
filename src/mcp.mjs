@@ -37,7 +37,7 @@ export function serve({ input = process.stdin, output = process.stdout, session 
     }
     if (state !== 'ready') { error(id, -32002, 'Complete initialization first'); return; }
     if (method === 'tools/list') {
-      result(id, { tools: TOOLS.map(t => ({ ...t, annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: t.name === 'jev_info', openWorldHint: t.name === 'jev_review_action' } })) });
+      result(id, { tools: TOOLS.map(t => ({ ...t, annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: t.name === 'jev_info', openWorldHint: ['jev_review_action', 'jev_assess_candidates'].includes(t.name) } })) });
       return;
     }
     if (method !== 'tools/call') { error(id, -32601, 'Method not found'); return; }

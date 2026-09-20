@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import fs from 'node:fs/promises';
+import { APP_SKILLS, installAppSkills } from '../src/app-skills.mjs';
 import { pathToFileURL } from 'node:url';
-import { ReviewSession, info, TOOLS, VERSION } from '../src/reviewer.mjs';
+import { ReviewSession, info, TOOLS } from '../src/reviewer.mjs';
 import { serve } from '../src/mcp.mjs';
 import { config, install } from '../src/setup.mjs';
 const print = data => console.log(typeof data === 'string' ? data : JSON.stringify(data, null, 2));
@@ -20,6 +21,13 @@ export async function main(args = process.argv.slice(2)) {
     const close = serve();
     for (const signal of ['SIGINT', 'SIGTERM']) process.once(signal, () => { close(); process.exit(0); });
     return;
+  }
+  if (command === 'skills') { print({ version: '0.5.0', appSkills: APP_SKILLS, executor: 'host-controlled' }); return; }
+  if (command === 'install-app-skills' || command === 'uninstall-app-skills') {
+    const w = rest.indexOf('--workspace');
+    const extras = rest.filter((_x, i) => i !== w + 1 || w < 0);
+    if (extras.some(x => !['--workspace', '--force'].includes(x)) || (w >= 0 && (!rest[w + 1] || rest[w + 1].startsWith('--')))) throw new Error('Usage: install-app-skills <agent> [--force] [--workspace PATH]');
+    print(installAppSkills(arg, { force: rest.includes('--force'), workspace: w < 0 ? undefined : rest[w + 1], uninstall: command === 'uninstall-app-skills' })); return;
   }
   if (command === 'doctor') { print(info()); return; }
   if (command === 'schema') { print(TOOLS); return; }
@@ -52,6 +60,6 @@ export async function main(args = process.argv.slice(2)) {
     return;
   }
   if (!['help', '--help', '-h'].includes(command)) throw new Error('Unknown command; use --help');
-  print(`Jev-ocu v${VERSION} — generic reviewer; Windows companion: node windows/cli.mjs --help\n\nnode bin/jev-ocu.mjs doctor|schema|demo|mcp\nnode bin/jev-ocu.mjs config <pi|agy|agy-cli|opencode|codex|claude|generic>\nnode bin/jev-ocu.mjs install <agent> [--workspace PATH] [--force] [--legacy]\nnode bin/jev-ocu.mjs review <request.json|->\n\nreview input: { proposal: ..., hostChecks: ... }. Exit: 0 ALLOW, 2 DENY, 1 input/runtime error.\nOnly review calls the paid API. demo is entirely mocked. Install never overwrites MCP settings.`);
+  print('Jev-ocu v0.5.0 — generic reviewer; native Windows remains optional\n\nnode bin/jev-ocu.mjs doctor|schema|demo|mcp|skills\nnode bin/jev-ocu.mjs install-app-skills <agent> [--force] [--workspace PATH]\nnode bin/jev-ocu.mjs config <pi|agy|agy-cli|opencode|codex|claude|generic>\nnode bin/jev-ocu.mjs install <agent> [--workspace PATH] [--force] [--legacy]\nnode bin/jev-ocu.mjs review <request.json|->\n\nreview input: { proposal: ..., hostChecks: ... }. Exit: 0 ALLOW, 2 DENY, 1 input/runtime error.\nOnly review calls the paid API. demo is entirely mocked. Install never overwrites MCP settings.');
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main().catch(err => { console.error(err.message); process.exitCode = 1; });

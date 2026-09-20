@@ -1,3 +1,4 @@
+import { safeId } from './diagnostics.mjs';
 /** Provider migration based on Jev-cu a8e9098. No desktop execution code. */
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -49,14 +50,16 @@ export function summarizeUsage(usage = {}) {
 export async function ask({ state, questions, apiKey, signal, fetchImpl = fetch, timeoutMs = 20_000, maxRetries = 2, retryDelayMs = 250 }) {
   if (!Number.isInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > 60_000) throw new Error('Invalid timeoutMs');
   if (!Number.isInteger(maxRetries) || maxRetries < 0 || maxRetries > 3) throw new Error('Invalid maxRetries');
-  const key = String(apiKey ?? loadApiKey()).trim();
-  if (!key) throw new Error('Missing OPENROUTER_API_KEY');
+  let key;
+  try { key = String(apiKey ?? loadApiKey()).trim(); if (!key) throw new Error(); }
+  catch { const err = new Error('Missing OPENROUTER_API_KEY'); err.code = 'missing_credentials'; throw err; }
   const body = JSON.stringify({ model: DEFAULT_MODEL, state, questions });
   if (Buffer.byteLength(body) > 65_536) throw new Error('Decisions request exceeds 64 KiB');
   const timeout = new AbortController();
   const timer = setTimeout(() => timeout.abort(new Error('OpenRouter request timed out')), timeoutMs);
   const combined = signal ? AbortSignal.any([signal, timeout.signal]) : timeout.signal;
   const started = Date.now();
+  let requestId = null, status = null;
   try {
     for (let attempt = 0; ; attempt++) {
       combined.throwIfAborted();
@@ -64,12 +67,15 @@ export async function ask({ state, questions, apiKey, signal, fetchImpl = fetch,
         method: 'POST', redirect: 'error', signal: combined,
         headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' }, body,
       });
+      status = res.status;
+      requestId = safeId(res.headers?.get?.('x-request-id')) ?? safeId(res.headers?.get?.('request-id'));
       let payload = null;
       try { payload = await res.json(); }
       catch { combined.throwIfAborted(); }
       combined.throwIfAborted();
+      requestId = safeId(payload?.id) ?? requestId;
       if (res.ok && payload?.answers && typeof payload.answers === 'object' && !Array.isArray(payload.answers)) {
-        return { answers: payload.answers, usage: summarizeUsage(payload.usage), model: payload.model ?? DEFAULT_MODEL, latencyMs: Date.now() - started };
+        return { answers: payload.answers, usage: summarizeUsage(payload.usage), model: safeId(payload.model) ?? DEFAULT_MODEL, requestId, httpStatus: status, latencyMs: Date.now() - started };
       }
       if ((res.status === 429 || res.status >= 500) && attempt < maxRetries) {
         await delay(retryDelayMs * (attempt + 1), undefined, { signal: combined });
@@ -77,12 +83,17 @@ export async function ask({ state, questions, apiKey, signal, fetchImpl = fetch,
       }
       // Do not reflect provider error text: it can echo keys or private observations.
       const err = new Error(res.ok ? 'Invalid OpenRouter Decisions response' : `OpenRouter HTTP ${res.status}`);
-      err.status = res.status;
+      err.status = res.status; err.requestId = requestId; err.model = DEFAULT_MODEL;
+      err.code = res.ok ? 'invalid_model_response' : 'provider_http_error';
       throw err;
     }
   } catch (err) {
-    if (combined.aborted) throw new Error(signal?.aborted ? 'Review cancelled' : 'OpenRouter request timed out');
+    if (combined.aborted) {
+      const aborted = new Error(signal?.aborted ? 'Review cancelled' : 'OpenRouter request timed out');
+      Object.assign(aborted, { code: signal?.aborted ? 'provider_cancelled' : 'provider_timeout', requestId, status, model: DEFAULT_MODEL }); throw aborted;
+    }
     if (err.status !== undefined) throw err;
-    throw new Error('OpenRouter request failed; check connectivity and configuration');
+    const failed = new Error('OpenRouter request failed; check connectivity and configuration');
+    Object.assign(failed, { code: 'provider_network_error', requestId, status, model: DEFAULT_MODEL }); throw failed;
   } finally { clearTimeout(timer); }
 }

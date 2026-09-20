@@ -1,13 +1,24 @@
 {
   "name": "jev-ocu",
-  "version": "0.4.0",
-  "description": "Agent-neutral Jev reviewer with optional native Windows computer use",
+  "version": "0.5.0",
+  "description": "Evidence-aware Jev reviewer, host-controlled Computer Use and Paint/Resolve/CapCut desktop skills",
   "private": true,
   "type": "module",
   "license": "ISC",
-  "engines": { "node": ">=22" },
-  "bin": { "jev-ocu": "bin/jev-ocu.mjs" },
-  "exports": { ".": "./src/reviewer.mjs", "./openrouter": "./src/openrouter.mjs", "./windows": "./windows/desktop.mjs" },
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "jev-ocu": "bin/jev-ocu.mjs"
+  },
+  "exports": {
+    ".": "./src/reviewer.mjs",
+    "./openrouter": "./src/openrouter.mjs",
+    "./windows": "./windows/desktop.mjs",
+    "./evidence": "./src/evidence.mjs",
+    "./official-sky": "./src/adapters/official-sky.mjs",
+    "./indexed-observation": "./src/adapters/indexed-observation.mjs"
+  },
   "scripts": {
     "test": "node --test",
     "start": "node bin/jev-ocu.mjs mcp",
@@ -16,9 +27,30 @@
     "install-skill": "node bin/jev-ocu.mjs install",
     "windows:doctor": "node windows/cli.mjs doctor",
     "windows:mcp": "node windows/cli.mjs mcp",
-    "windows:test": "node --test windows/desktop.test.mjs windows/native.test.mjs",
-    "windows:install": "node windows/install.mjs"
+    "windows:test": "node --test windows/desktop.test.mjs windows/native.test.mjs tests/enhancements.test.mjs",
+    "windows:install": "node windows/install.mjs",
+    "install-app-skills": "node bin/jev-ocu.mjs install-app-skills",
+    "skills": "node bin/jev-ocu.mjs skills"
   },
-  "pi": { "extensions": ["./integrations/pi/index.ts"], "skills": ["./skill/jev-ocu"] },
-  "files": ["src", "bin", "integrations", "skill", "examples", "docs", "windows", "README.md", "LICENSE", "NOTICE.md", ".env.example"]
+  "pi": {
+    "extensions": [
+      "./integrations/pi/index.ts"
+    ],
+    "skills": [
+      "./skill/jev-ocu"
+    ]
+  },
+  "files": [
+    "src",
+    "bin",
+    "integrations",
+    "skill",
+    "examples",
+    "docs",
+    "README.md",
+    "LICENSE",
+    "NOTICE.md",
+    ".env.example",
+    "windows"
+  ]
 }

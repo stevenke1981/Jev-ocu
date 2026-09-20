@@ -35,3 +35,10 @@ CLI 為單次、無持久 session；回覆只是審查紀錄，不是可移交�
 `OPENROUTER_API_KEY` 放在環境或專案 `.env.local`；不輸出、不傳入工具參數。Jev 收到的僅是文字資料，不傳截圖；密碼、驗證碼、完整個资等不得送入。內建字串檢查不是完整脫敏器。
 
 Skill/MCP 只是協作式 reviewer，無法攔截宿主繞過它的其他工具；不可聲稱已實作不可繞過的安全閘道。保留宿主原有安全規則及必要確認，不修改官方插件或放寬全域權限。
+
+
+## v0.5.0 證據與候選建議
+
+先讀 `{{REPO_DIR}}/skill/jev-desktop-context/SKILL.md` 和目前 App Skill。proposal可加入context，包含來源／session／window／revision、phase、選取物件與現值、unknowns及expectedOutcome；validation也需保留同樣證據。
+
+新增 jev_assess_candidates 是可選付費 target/action/done/risk 建議，不會產生核准或執行。不要把done当approve，也不每步重複支付不必要的建議與審查。診斷現在分別顯示解析錯誤、approve不足、risk過高及provider故障，詳見 diagnostics；不降門檻。Windows companion有自己的context綁定，別混用兩個server的ID。

@@ -29,7 +29,7 @@ test('real CLI subprocess does MCP initialize/list/info over stdio', { timeout: 
   const child = spawn(process.execPath, [cli, 'mcp'], { stdio: ['pipe', 'pipe', 'pipe'] }); t.after(() => child.kill());
   const c = client(child.stdin, child.stdout);
   assert.equal((await c.init()).result.serverInfo.name, 'jev-ocu');
-  const listed = await c.rpc('tools/list'); assert.equal(listed.result.tools.length, 4);
+  const listed = await c.rpc('tools/list'); assert.equal(listed.result.tools.length, 5);
   const result = await c.rpc('tools/call', { name: 'jev_info', arguments: {} });
   assert.equal(result.result.structuredContent.executed, false);
   child.stdin.end();
@@ -81,10 +81,10 @@ test('installer refuses overwrite, backs up on force, leaves MCP config untouche
 });
 test('Pi adapter registers all shared tools and handles lifecycle with mock host', async () => {
   const tools = [], events = {};
-  const Type = { Object: (properties, options) => ({ type: 'object', properties, ...options }), Array: (items, options) => ({ type: 'array', items, ...options }), Boolean: () => ({ type: 'boolean' }), String: options => ({ type: 'string', ...options }), Optional: value => ({ ...value, optional: true }) };
+  const Type = { Object: (properties, options) => ({ type: 'object', properties, ...options }), Array: (items, options) => ({ type: 'array', items, ...options }), Number: () => ({ type: 'number' }), Boolean: () => ({ type: 'boolean' }), String: options => ({ type: 'string', ...options }), Optional: value => ({ ...value, optional: true }) };
   registerPi({ registerTool: t => tools.push(t), on: (name, fn) => events[name] = fn }, Type);
-  assert.equal(tools.length, 4); assert.equal((await tools[0].execute('t', {})).details.executed, false);
-  await events.session_start(); await events.session_shutdown(); await assert.rejects(tools[0].execute('t', {}), /closed/);
+  assert.equal(tools.length, 5); assert.equal((await tools.find(t => t.name === 'jev_info').execute('t', {})).details.executed, false);
+  await events.session_start(); await events.session_shutdown(); await assert.rejects(tools.find(t => t.name === 'jev_info').execute('t', {}), /closed/);
 });
 test('AGY CLI and IDE skill locations are distinct', () => {
   const home = fs.mkdtempSync(path.join(os.tmpdir(), 'jev-agy-'));
