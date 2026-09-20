@@ -1,0 +1,45 @@
+{
+  "name": "jev-ocu",
+  "version": "0.3.0",
+  "description": "Agent-neutral Jev reviewer over OpenRouter: MCP, CLI and Pi extension",
+  "private": true,
+  "type": "module",
+  "license": "ISC",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "jev-ocu": "bin/jev-ocu.mjs"
+  },
+  "exports": {
+    ".": "./src/reviewer.mjs",
+    "./openrouter": "./src/openrouter.mjs"
+  },
+  "scripts": {
+    "test": "node --test",
+    "start": "node bin/jev-ocu.mjs mcp",
+    "doctor": "node bin/jev-ocu.mjs doctor",
+    "demo": "node bin/jev-ocu.mjs demo",
+    "install-skill": "node bin/jev-ocu.mjs install"
+  },
+  "pi": {
+    "extensions": [
+      "./integrations/pi/index.ts"
+    ],
+    "skills": [
+      "./skill/jev-ocu"
+    ]
+  },
+  "files": [
+    "src",
+    "bin",
+    "integrations",
+    "skill",
+    "examples",
+    "docs",
+    "README.md",
+    "LICENSE",
+    "NOTICE.md",
+    ".env.example"
+  ]
+}

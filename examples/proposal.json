@@ -1,0 +1,12 @@
+{
+  "goal": "Switch the calendar to the previous month",
+  "observation": {
+    "source": "uia",
+    "app": "Calendar",
+    "revision": "calendar-view-1",
+    "observedAt": "2026-01-01T00:00:00.000Z",
+    "text": "September 2026. A previous month button is visible.",
+    "elements": [{ "id": "previous-month", "role": "button", "label": "Previous month", "enabled": true }]
+  },
+  "action": { "type": "click", "tool": "desktop_click", "targetId": "previous-month", "arguments": { "element_id": "previous-month" } }
+}
