@@ -1,0 +1,8 @@
+node_modules/
+.env*
+!.env.example
+runs/
+.generated/
+coverage/
+*.log
+.DS_Store
